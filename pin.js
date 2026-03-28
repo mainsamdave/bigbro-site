@@ -1,5 +1,5 @@
-const pinataSDK = require('pinata-sdk');
 const path = require('path');
+const pinataSDK = require('pinata-sdk');
 
 const pinata = pinataSDK(
   process.env.PINATA_API_KEY,
