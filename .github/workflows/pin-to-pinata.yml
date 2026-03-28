@@ -1,0 +1,31 @@
+name: Pin bigbro to Pinata
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout your repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24'  # Use Node 24 to avoid deprecation warnings
+
+      # Step 3: Install Pinata SDK
+      - name: Install dependencies
+        run: npm install pinata-sdk
+
+      # Step 4: Pin your folder
+      - name: Pin bigbro folder
+        run: node pin.js
+        env:
+          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+          PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
