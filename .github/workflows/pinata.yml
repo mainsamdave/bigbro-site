@@ -1,0 +1,37 @@
+name: Pin to Pinata
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pin-to-pinata:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Pinata CLI
+      run: npm install -g @pinata/sdk
+
+    - name: Pin files to Pinata
+      env:
+        PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+        PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
+      run: |
+        node -e "
+          const pinataSDK = require('@pinata/sdk');
+          const fs = require('fs');
+          const path = require('path');
+          const pinata = pinataSDK(process.env.PINATA_API_KEY, process.env.PINATA_API_SECRET);
+          pinata.pinFromFS(path.join(process.cwd(), 'index.html'), {pinataMetadata: {name: 'bigbro-site'}})
+            .then(result => console.log('Pinned:', result.IpfsHash))
+            .catch(err => console.error('Error:', err));
+        "
