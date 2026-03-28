@@ -1,4 +1,4 @@
-name: Pin bigbro to IPFS via Pinata
+name: Pin to Pinata
 
 on:
   push:
@@ -6,23 +6,15 @@ on:
       - main
 
 jobs:
-  pin-to-pinata:
+  pin:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js 24
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '24'
-
-      - name: Install Pinata SDK
-        run: npm install pinata-sdk
-
-      - name: Pin bigbro folder to Pinata
-        run: |
-          node pin.js
+          node-version: '24'   # <- important!
+      - run: npm install pinata-sdk
+      - run: node pin.js
+        env:
+          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+          PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
